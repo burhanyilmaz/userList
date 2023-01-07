@@ -6,12 +6,15 @@ import {
 } from '@react-navigation/native-stack';
 import UserList from 'screens/UserList';
 import UserDetail from 'screens/UserDetail';
+import { Provider } from 'react-redux';
+import { store } from 'store';
+import { Screen } from './Screens';
 
 const Stack = createNativeStackNavigator();
 
 export type MainNavigatorParamList = {
-  UserList: undefined;
-  UserDetail: undefined;
+  [Screen.USER_LIST]: undefined;
+  [Screen.USER_DETAILS]: undefined;
 };
 
 const commonOptions: NativeStackNavigationOptions = {
@@ -19,12 +22,14 @@ const commonOptions: NativeStackNavigationOptions = {
 };
 
 const MainNavigator = () => (
-  <NavigationContainer>
-    <Stack.Navigator>
-      <Stack.Screen name="UserList" component={UserList} options={commonOptions} />
-      <Stack.Screen name="UserDetail" component={UserDetail} options={commonOptions} />
-    </Stack.Navigator>
-  </NavigationContainer>
+  <Provider store={store}>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name={Screen.USER_LIST} component={UserList} options={commonOptions} />
+        <Stack.Screen name={Screen.USER_DETAILS} component={UserDetail} options={commonOptions} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  </Provider>
 );
 
 export default MainNavigator;
