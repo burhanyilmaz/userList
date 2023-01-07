@@ -1,18 +1,22 @@
+import { Button } from 'components';
+import Input from 'components/core/Input';
 import UserCard from 'components/UserCard';
 import { useAppDispatch } from 'hooks/useAppDispatch';
 import { useAppNavigation } from 'hooks/useAppNavigation';
 import { Screen } from 'navigators/Screens';
-import React, { useEffect } from 'react';
-import { FlatList, SafeAreaView, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { removeUser, selectUser } from 'store/users/actions';
+import { addUser, removeUser, selectUser } from 'store/users/actions';
 import { userListSelector } from 'store/users/selectors';
 import { fetchUserList } from 'store/users/thunk';
 import { User } from 'store/users/types';
-import { VERTICAL_PADDING } from 'utils/constants';
+import { PADDING } from 'utils/constants';
+import { isValidUrl } from 'utils/helpers';
 
 const UserList = () => {
   const dispatch = useAppDispatch();
+  const [newUserImage, setNewUserImage] = useState('');
   const users = useSelector(userListSelector);
   const { navigate } = useAppNavigation();
 
@@ -23,6 +27,17 @@ const UserList = () => {
   const onNavigateUserDetails = (user: User) => {
     dispatch(selectUser(user));
     navigate(Screen.USER_DETAILS);
+  };
+
+  const onAddNewUser = () => {
+    if (!isValidUrl(newUserImage)) {
+      alert('Pleas write valid image url!');
+
+      return;
+    }
+    dispatch(addUser(newUserImage));
+    setNewUserImage('');
+    alert('Added new user.');
   };
 
   useEffect(() => {
@@ -43,14 +58,25 @@ const UserList = () => {
   );
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <FlatList
         data={users}
         numColumns={2}
+        ListEmptyComponent={
+          <View style={styles.loading}>
+            <ActivityIndicator />
+          </View>
+        }
         renderItem={renderItem}
+        ListHeaderComponent={
+          <Input value={newUserImage} onChange={setNewUserImage} placeholder="User Image Url" />
+        }
         keyExtractor={item => item.id.toString()}
         columnWrapperStyle={styles.columnWrapperStyle}
       />
+      <View style={styles.floatButtonContainer}>
+        <Button title="Add User" onPress={onAddNewUser} />
+      </View>
     </SafeAreaView>
   );
 };
@@ -58,7 +84,17 @@ const UserList = () => {
 const styles = StyleSheet.create({
   columnWrapperStyle: {
     justifyContent: 'space-around',
-    padding: VERTICAL_PADDING,
+    padding: PADDING,
+    alignItems: 'center',
+  },
+  floatButtonContainer: {
+    position: 'absolute',
+    bottom: 16,
+    width: '100%',
+    padding: PADDING,
+  },
+  loading: {
+    marginTop: 16,
   },
 });
 

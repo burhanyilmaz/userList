@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { removeUser, resetUsers, selectUser } from './actions';
+import { addUser, removeUser, resetUsers, selectUser } from './actions';
 import { fetchUserList } from './thunk';
-import { UsersState } from './types';
+import { User, UsersState } from './types';
 
 export const initialState: UsersState = {
   users: [],
@@ -19,6 +19,18 @@ const users = createReducer(initialState, builder =>
       return { ...state, users: newUserList };
     })
     .addCase(selectUser, (state, { payload }) => ({ ...state, selectedUser: payload }))
+    .addCase(addUser, (state, { payload }) => ({
+      ...state,
+      users: [
+        {
+          image: payload,
+          username: 'Anonymous',
+          id: state.users.length + 1,
+          age: state.users.length + 1,
+        } as User,
+        ...state.users,
+      ],
+    }))
     .addCase(resetUsers, () => initialState),
 );
 

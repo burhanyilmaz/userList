@@ -2,24 +2,18 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import { selectedUserSelector } from 'store/users/selectors';
-import { VERTICAL_PADDING, width } from 'utils/constants';
+import { PADDING, width } from 'utils/constants';
 import { useAppNavigation } from 'hooks/useAppNavigation';
 import { Button, Spacer } from 'components';
 import InformationWithLabel from 'components/InformationWithLabel';
 
 const UserDetail = () => {
-  const {
-    age,
-    image,
-    lastName,
-    firstName,
-    company: { address },
-  } = useSelector(selectedUserSelector)!;
+  const { age, image, lastName, firstName, company } = useSelector(selectedUserSelector)!;
   const { goBack } = useAppNavigation();
 
   const displayCompanyLocation = () => {
     Linking.openURL(
-      `https://www.google.com/maps/search/${address.coordinates.lat},${address.coordinates.lng}`,
+      `https://www.google.com/maps/search/${company?.address.coordinates.lat},${company?.address.coordinates.lng}`,
     );
   };
 
@@ -39,11 +33,11 @@ const UserDetail = () => {
         </View>
         <Spacer size={16} />
         <View>
-          <InformationWithLabel label={'Company Address'} info={address.address} />
+          <InformationWithLabel label={'Company Address'} info={company?.address.address} />
           <Spacer size={4} />
-          <InformationWithLabel label={'Company Postal Code'} info={address.postalCode} />
+          <InformationWithLabel label={'Company Postal Code'} info={company?.address.postalCode} />
           <Spacer size={4} />
-          <InformationWithLabel label={'Company State'} info={address.state} />
+          <InformationWithLabel label={'Company State'} info={company?.address.state} />
           <Spacer size={4} />
           <Button title="Go to Google Maps" onPress={displayCompanyLocation} />
         </View>
@@ -71,7 +65,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
     marginTop: width / 1.5 - 16,
     backgroundColor: '#fff',
-    padding: VERTICAL_PADDING,
+    padding: PADDING,
   },
   userInformation: {
     borderBottomWidth: 2,
@@ -82,7 +76,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
     top: 30,
     position: 'absolute',
-    padding: VERTICAL_PADDING,
+    padding: PADDING,
   },
   goBackText: {
     fontSize: 15,
