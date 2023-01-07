@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { removeUser, resetUsers } from './actions';
+import { removeUser, resetUsers, selectUser } from './actions';
 import { fetchUserList } from './thunk';
 import { UsersState } from './types';
 
@@ -18,6 +18,7 @@ const users = createReducer(initialState, builder =>
 
       return { ...state, users: newUserList };
     })
+    .addCase(selectUser, (state, { payload }) => ({ ...state, selectedUser: payload }))
     .addCase(resetUsers, () => initialState),
 );
 

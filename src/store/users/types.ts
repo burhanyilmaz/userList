@@ -26,4 +26,5 @@ export interface User {
 
 export type UsersState = {
   users: User[];
+  selectedUser?: User;
 };

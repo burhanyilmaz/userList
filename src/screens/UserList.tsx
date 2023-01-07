@@ -1,10 +1,11 @@
-import { useNavigation } from '@react-navigation/native';
 import UserCard from 'components/UserCard';
 import { useAppDispatch } from 'hooks/useAppDispatch';
+import { useAppNavigation } from 'hooks/useAppNavigation';
+import { Screen } from 'navigators/Screens';
 import React, { useEffect } from 'react';
 import { FlatList, SafeAreaView, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { removeUser } from 'store/users/actions';
+import { removeUser, selectUser } from 'store/users/actions';
 import { userListSelector } from 'store/users/selectors';
 import { fetchUserList } from 'store/users/thunk';
 import { User } from 'store/users/types';
@@ -13,10 +14,15 @@ import { VERTICAL_PADDING } from 'utils/constants';
 const UserList = () => {
   const dispatch = useAppDispatch();
   const users = useSelector(userListSelector);
-  const { navigate } = useNavigation();
+  const { navigate } = useAppNavigation();
 
   const onRemoveUserHandler = (id: number) => {
     dispatch(removeUser(id));
+  };
+
+  const onNavigateUserDetails = (user: User) => {
+    dispatch(selectUser(user));
+    navigate(Screen.USER_DETAILS);
   };
 
   useEffect(() => {
@@ -30,8 +36,7 @@ const UserList = () => {
       image={item.image}
       name={item.username}
       onPress={() => {
-        // TODO:
-        navigate('UserDetail');
+        onNavigateUserDetails(item);
       }}
       onClickRemove={onRemoveUserHandler}
     />

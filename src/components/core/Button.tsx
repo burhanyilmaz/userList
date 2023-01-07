@@ -23,6 +23,8 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: 16,
     paddingHorizontal: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     color: 'white',
